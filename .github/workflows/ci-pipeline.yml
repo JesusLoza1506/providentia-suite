@@ -1,0 +1,18 @@
+name: Providentia Suite CI Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  validate-docker:
+    name: Validar sintaxis de Docker Compose
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Validar docker-compose.yml
+        run: docker compose config
