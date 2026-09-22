@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # Base de Datos PostgreSQL + pgvector
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: providentia_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: providentia_db
+      POSTGRES_USER: providentia_admin
+      POSTGRES_PASSWORD: providentia_secure_password_2026
+    ports:
+      - "5435:5432" # Puerto externo 5435
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Caché y Colas de Notificaciones
+  redis:
+    image: redis:7-alpine
+    container_name: providentia_redis
+    restart: always
+    ports:
+      - "6381:6379" # Puerto externo 6381
+    volumes:
+      - redis_data:/data
+
+  # Interfaz Visual para Administrar la BD (pgAdmin)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: providentia_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@providentia.edu.pe
+      PGADMIN_DEFAULT_PASSWORD: admin_pgadmin_password
+    ports:
+      - "5052:80" # Puerto externo 5052
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  redis_data:
